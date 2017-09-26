@@ -1,8 +1,8 @@
 version: '3'
  
 services:
-  myservice:
-    image: com-moonlay-service-auth-webapi
+  moonlay-service-auth-webapi:
+    image: moonlay/com-moonlay-service-auth-webapi
     environment:
       - DefaultConnection=Server=mssql;Database=com.moonlay.auth;User=sa;Password=Admin-pwd;MultipleActiveResultSets=true
     build:

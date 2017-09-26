@@ -6,4 +6,4 @@ services:
     volumes:
       - .:/src
     working_dir: /src
-    command: /bin/bash -c "dotnet restore ./Com.Moonlay.Service.Auth.WebApi.sln && dotnet publish ./Com.Moonlay.Service.Auth.WebApi.sln -c Release -o ./obj/Docker/publish"
+    command: /bin/bash -c "dotnet restore ./Com.Moonlay.Service.Auth.sln && dotnet publish ./Com.Moonlay.Service.Auth.sln -c Release -o ./obj/Docker/publish"
