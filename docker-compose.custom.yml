@@ -1,0 +1,22 @@
+version: '3'
+ 
+services:
+  myservice:
+    image: com-moonlay-service-auth-webapi
+    environment:
+      - DefaultConnection=Server=mssql;Database=com.moonlay.auth;User=sa;Password=Admin-pwd;MultipleActiveResultSets=true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    links:
+      - mssql
+  mssql:
+    image: microsoft/mssql-server-linux
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Admin-pwd
+      - MSSQL_PID=Developer
+    expose:
+      - "1433"
