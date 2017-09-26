@@ -13,8 +13,9 @@ before_install:
     - docker build -f ./Dockerfile.travis -t moonlay/com-moonlay-service-auth-webapi .
 install: true
 
+before_script:
+    - dotnet build ./Com.Moonlay.Service.Auth.sln
 script:
-    - dotnet build
     - dotnet test Com.Moonlay.Service.Auth.WebApi.Test/Com.Moonlay.Service.Auth.WebApi.Test.csproj
 
 after_success:
