@@ -1,10 +1,20 @@
+sudo: required
 language: csharp
 solution: Com.Moonlay.Service.Auth.WebApiname.sln
 mono: none
 dotnet: 1.0.1
 dist: trusty
+services:
+    - docker
+before_install:
+    - docker build -t moonlay/com-moonlay-service-auth-webapi .
 install:
     - dotnet restore
 script:
     - dotnet build
     - dotnet test Com.Moonlay.Service.Auth.WebApi.Test/Com.Moonlay.Service.Auth.WebApi.Test.csproj
+after_success:
+    - if [ "$TRAVIS_BRANCH" == "master" ]; then
+      docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+      docker push moonlay/com-moonlay-service-auth-webapi;
+      fi    
