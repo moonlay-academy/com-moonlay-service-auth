@@ -9,8 +9,6 @@ services:
 
 before_install:
     - dotnet restore ./Com.Moonlay.Service.Auth.sln
-    - dotnet publish ./Com.Moonlay.Service.Auth.WebApi/Com.Moonlay.Service.Auth.WebApi.csproj -o ./bin/publish
-    - docker build -f ./Dockerfile.travis -t moonlay/com-moonlay-service-auth-webapi .
 install: true
 
 #before_script:
@@ -20,6 +18,8 @@ script:
 
 after_success:
     - if [ "$TRAVIS_BRANCH" == "master" ]; then
+      dotnet publish ./Com.Moonlay.Service.Auth.WebApi/Com.Moonlay.Service.Auth.WebApi.csproj -o ./bin/publish
+      docker build -f ./Dockerfile.travis -t moonlay/com-moonlay-service-auth-webapi:$TRAVIS_BUILD_NUMBER .
       docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
       docker push moonlay/com-moonlay-service-auth-webapi:$TRAVIS_BUILD_NUMBER;
       fi    
