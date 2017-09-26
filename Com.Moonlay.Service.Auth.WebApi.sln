@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Com.Moonlay.Service.Auth.WebApi", "Com.Moonlay.Service.Auth.WebApi\Com.Moonlay.Service.Auth.WebApi.csproj", "{7CFA6610-83E8-497C-AD64-D98A801686AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1AF0C70B-799C-4019-96D0-B2B65811541C}"
+	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Com.Moonlay.Service.Auth.WebApi.Test", "Com.Moonlay.Service.Auth.WebApi.Test\Com.Moonlay.Service.Auth.WebApi.Test.csproj", "{F817063E-D13D-4ACF-9335-7064B7A0A8C6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7CFA6610-83E8-497C-AD64-D98A801686AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CFA6610-83E8-497C-AD64-D98A801686AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CFA6610-83E8-497C-AD64-D98A801686AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CFA6610-83E8-497C-AD64-D98A801686AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F817063E-D13D-4ACF-9335-7064B7A0A8C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F817063E-D13D-4ACF-9335-7064B7A0A8C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F817063E-D13D-4ACF-9335-7064B7A0A8C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F817063E-D13D-4ACF-9335-7064B7A0A8C6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD4DB924-054D-47E0-A1AD-1C146B35DEF2}
+	EndGlobalSection
+EndGlobal

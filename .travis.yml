@@ -1,0 +1,10 @@
+language: csharp
+solution: Com.Moonlay.Service.Auth.WebApiname.sln
+mono:none
+dotnet: 1.1.1
+dist:trusty
+install:
+    - dotnet restore
+script:
+    - dotnet build
+    - dotnet test Com.Moonlay.Service.Auth.WebApi.Test/Com.Moonlay.Service.Auth.WebApi.Test.csproj
