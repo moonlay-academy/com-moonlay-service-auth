@@ -7,10 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Com.Moonlay.Service.Auth.We
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1AF0C70B-799C-4019-96D0-B2B65811541C}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
 		.gitignore = .gitignore
 		.travis.yml = .travis.yml
-		docker-compose.travis.yml = docker-compose.travis.yml
-		Dockerfile.travis = Dockerfile.travis
+		docker-compose.test.yml = docker-compose.test.yml
+		Dockerfile.test = Dockerfile.test
+		Dockerfile.test.build = Dockerfile.test.build
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
@@ -18,6 +20,16 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Com.Moonlay.Service.Auth.WebApi.Test", "Com.Moonlay.Service.Auth.WebApi.Test\Com.Moonlay.Service.Auth.WebApi.Test.csproj", "{F817063E-D13D-4ACF-9335-7064B7A0A8C6}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C2A7224D-44F0-4F25-91C2-4778C2035D83}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sh", "sh", "{6B2BD1CD-2C7C-4DCF-8700-2779620AE80D}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile.test.build.sh = Dockerfile.test.build.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bat", "bat", "{7D0A1BD7-4B3E-410A-90BD-95E3B05724B3}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile.test.build.bat = Dockerfile.test.build.bat
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +52,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6B2BD1CD-2C7C-4DCF-8700-2779620AE80D} = {1AF0C70B-799C-4019-96D0-B2B65811541C}
+		{7D0A1BD7-4B3E-410A-90BD-95E3B05724B3} = {1AF0C70B-799C-4019-96D0-B2B65811541C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD4DB924-054D-47E0-A1AD-1C146B35DEF2}

@@ -6,15 +6,18 @@ dotnet: 1.0.1
 solution: Com.Moonlay.Service.Auth.sln
 services:
     - docker
+env:
+    - ASPNETCORE_ENVIRONMENT=Test
 
 before_install:
-    - dotnet restore ./Com.Moonlay.Service.Auth.sln
-    - dotnet publish ./Com.Moonlay.Service.Auth.WebApi/Com.Moonlay.Service.Auth.WebApi.csproj -o ./bin/publish
-    - docker build -f ./Dockerfile.travis -t moonlay/com-moonlay-service-auth-webapi:$TRAVIS_BUILD_NUMBER .
+    - Dockerfile.test.build.sh
+    #- dotnet publish ./Com.Moonlay.Service.Auth.WebApi/Com.Moonlay.Service.Auth.WebApi.csproj -o ./bin/publish
+    #- docker build -f ./Dockerfile.travis -t moonlay/com-moonlay-service-auth-webapi:$TRAVIS_BUILD_NUMBER .
 install: true
 
-#before_script:
-#    - dotnet build ./Com.Moonlay.Service.Auth.sln
+before_script:
+    - docker-compose -f docker-compose.test.yml up
+    #- docker run -p 127.0.0.1:5000:80 --env ASPNETCORE_ENVIRONMENT=Test moonlay/com-moonlay-service-auth-webapi:$TRAVIS_BUILD_NUMBER
 script:
     - dotnet test Com.Moonlay.Service.Auth.WebApi.Test/Com.Moonlay.Service.Auth.WebApi.Test.csproj
 

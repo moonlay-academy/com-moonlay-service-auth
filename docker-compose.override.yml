@@ -3,6 +3,6 @@ version: '3'
 services:
   com.moonlay.service.auth.webapi:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Test
     ports:
       - "80"

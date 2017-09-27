@@ -4,11 +4,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
 using IdentityServer4;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Com.Moonlay.Service.Auth.WebApi
 {
     public class Config
-    { // scopes define the API resources in your system
+    {
+        static IApplicationBuilder app;
+        static IHostingEnvironment env;
+        static ILoggerFactory loggerFactory;
+
+        public static void Init(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
+            Config.app = app;
+            Config.env = env;
+            Config.loggerFactory = loggerFactory;
+        }
+        // scopes define the API resources in your system
         public static IEnumerable<IdentityResource> GetIdentityResources()
         {
             return new List<IdentityResource>
@@ -20,7 +35,7 @@ namespace Com.Moonlay.Service.Auth.WebApi
 
         public static IEnumerable<ApiResource> GetApiResources()
         {
-            return new List<ApiResource>
+            var apiResources = new List<ApiResource>
             {
                 new ApiResource{
                     Name ="api.gateway",
@@ -45,17 +60,22 @@ namespace Com.Moonlay.Service.Auth.WebApi
                     new Scope("service.project.write")
                 }},
             };
+
+            if (env.IsEnvironment("Test"))
+                apiResources.Add(new ApiResource("test", "Test Resource"));
+
+            return apiResources;
         }
 
         // client want to access resources (aka scopes)
         public static IEnumerable<Client> GetClients()
         {
-            return new List<Client>
+            List<Client> clients = new List<Client>
             {
                 new Client
                 {
                     ClientId = "api.gateway",
-                    ClientName = "JET Azure API Management Gateway",
+                    ClientName = "Moonlay Azure API Management Gateway",
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
@@ -97,6 +117,26 @@ namespace Com.Moonlay.Service.Auth.WebApi
                     }
                 }
             };
+
+            if (env.IsEnvironment("Test"))
+                clients.Add(new Client
+                {
+                    ClientId = "unit.test",
+                    ClientName = "Unit Test",
+                    ClientSecrets =
+                    {
+                        new Secret("test".Sha256())
+                    },
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedScopes = {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "service.project.read",
+                        "service.project.write",
+                        "test"
+                    }
+                });
+            return clients;
         }
     }
 }
