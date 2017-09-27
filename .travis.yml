@@ -11,7 +11,7 @@ env:
 
 before_install:
     #- Dockerfile.test.build.sh
-    - rmdir -rf bin/publish
+    - rm -rf bin/publish
     - docker build -f Dockerfile.test.build -t com-moonlay-service-auth-webapi:test-build .
     - docker rm com-moonlay-service-auth-webapi-test-build-container
     - docker create --name com-moonlay-service-auth-webapi-test-build-container com-moonlay-service-auth-webapi:test-build
