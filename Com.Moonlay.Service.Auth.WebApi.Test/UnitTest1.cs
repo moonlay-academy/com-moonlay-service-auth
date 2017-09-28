@@ -9,7 +9,7 @@ namespace Com.Moonlay.Service.Auth.WebApi.Test
         [Fact]
         public void Test1()
         {
-            var disco = DiscoveryClient.GetAsync("http://localhost:5000").Result;
+            var disco = DiscoveryClient.GetAsync("http://127.0.0.1:5000").Result;
             var tokenClient = new TokenClient(disco.TokenEndpoint, "unit.test", "test");
             var tokenResponse = tokenClient.RequestClientCredentialsAsync("service.project.read").Result;
             Assert.False(tokenResponse.IsError);
