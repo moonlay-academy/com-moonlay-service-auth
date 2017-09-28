@@ -17,7 +17,7 @@ install: true
 
 before_script:
     - docker-compose -f docker-compose.test.yml up -d
-    - sleep 30
+    - sleep 60
     #- docker run -p 127.0.0.1:5000:80 --env ASPNETCORE_ENVIRONMENT=Test moonlay/com-moonlay-service-auth-webapi:$TRAVIS_BUILD_NUMBER
 script:
     - dotnet restore Com.Moonlay.Service.Auth.WebApi.Test/Com.Moonlay.Service.Auth.WebApi.Test.csproj
@@ -27,5 +27,6 @@ script:
 after_success:
     - if [ "$TRAVIS_BRANCH" == "master" ]; then
       docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+      docker tag com-moonlay-service-auth-webapi:test moonlay/com-moonlay-service-auth-webapi:$TRAVIS_BUILD_NUMBER;
       docker push moonlay/com-moonlay-service-auth-webapi:$TRAVIS_BUILD_NUMBER;
       fi    
