@@ -21,7 +21,7 @@ before_install:
 install: true
 
 before_script:
-    - docker-compose -f docker-compose.test.yml up
+    - docker-compose -f docker-compose.test.yml up-d
     #- docker run -p 127.0.0.1:5000:80 --env ASPNETCORE_ENVIRONMENT=Test moonlay/com-moonlay-service-auth-webapi:$TRAVIS_BUILD_NUMBER
 script:
     - dotnet test Com.Moonlay.Service.Auth.WebApi.Test/Com.Moonlay.Service.Auth.WebApi.Test.csproj
