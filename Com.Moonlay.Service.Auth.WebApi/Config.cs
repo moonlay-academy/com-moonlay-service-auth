@@ -12,17 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 namespace Com.Moonlay.Service.Auth.WebApi
 {
     public class Config
-    {
-        static IApplicationBuilder app;
-        static IHostingEnvironment env;
-        static ILoggerFactory loggerFactory;
-
-        public static void Init(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            Config.app = app;
-            Config.env = env;
-            Config.loggerFactory = loggerFactory;
-        }
+    { 
         // scopes define the API resources in your system
         public static IEnumerable<IdentityResource> GetIdentityResources()
         {
@@ -52,7 +42,7 @@ namespace Com.Moonlay.Service.Auth.WebApi
                     Name ="com.moonlay.service.project",
                     ApiSecrets =  {
                         new Secret("secret".Sha256())
-                    },
+                    },                    
                     DisplayName = "Moonlay Project  API Service",
                     Description = "Moonlay Project  API Service",
                     Scopes=new List<Scope> {
@@ -60,10 +50,7 @@ namespace Com.Moonlay.Service.Auth.WebApi
                     new Scope("service.project.write")
                 }},
             };
-
-            if (env.IsEnvironment("Test"))
-                apiResources.Add(new ApiResource("test", "Test Resource"));
-
+             
             return apiResources;
         }
 
@@ -116,26 +103,8 @@ namespace Com.Moonlay.Service.Auth.WebApi
                         "https://getpostman.com/oauth2/callback"
                     }
                 }
-            };
+            }; 
 
-            if (env.IsEnvironment("Test"))
-                clients.Add(new Client
-                {
-                    ClientId = "unit.test",
-                    ClientName = "Unit Test",
-                    ClientSecrets =
-                    {
-                        new Secret("test".Sha256())
-                    },
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    AllowedScopes = {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        "service.project.read",
-                        "service.project.write",
-                        "test"
-                    }
-                });
             return clients;
         }
     }

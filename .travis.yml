@@ -10,15 +10,12 @@ env:
     - ASPNETCORE_ENVIRONMENT=Test
 
 before_install:
-    -  bash Dockerfile.test.build.sh
-    #- dotnet publish ./Com.Moonlay.Service.Auth.WebApi/Com.Moonlay.Service.Auth.WebApi.csproj -o ./bin/publish
-    #- docker build -f ./Dockerfile.travis -t moonlay/com-moonlay-service-auth-webapi:$TRAVIS_BUILD_NUMBER .
+    -  bash Dockerfile.test.build.sh 
 install: true
 
 before_script:
     - docker-compose -f docker-compose.test.yml up -d
     - sleep 60
-    #- docker run -p 127.0.0.1:5000:80 --env ASPNETCORE_ENVIRONMENT=Test moonlay/com-moonlay-service-auth-webapi:$TRAVIS_BUILD_NUMBER
 script:
     - dotnet restore Com.Moonlay.Service.Auth.WebApi.Test/Com.Moonlay.Service.Auth.WebApi.Test.csproj
     - dotnet build Com.Moonlay.Service.Auth.WebApi.Test/Com.Moonlay.Service.Auth.WebApi.Test.csproj

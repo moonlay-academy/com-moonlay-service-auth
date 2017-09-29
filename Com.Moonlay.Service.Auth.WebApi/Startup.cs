@@ -12,6 +12,10 @@ using Com.Moonlay.Service.Auth.WebApi.Models;
 using Com.Moonlay.Service.Auth.WebApi.Services;
 using System.Linq;
 using System.Reflection;
+using IdentityServer4.Models;
+using IdentityServer4;
+using System.Net.NetworkInformation;
+using System.Net;
 
 namespace Com.Moonlay.Service.Auth.WebApi
 {
@@ -22,7 +26,7 @@ namespace Com.Moonlay.Service.Auth.WebApi
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true); 
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
             if (env.IsDevelopment())
             {
                 // For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
@@ -38,7 +42,6 @@ namespace Com.Moonlay.Service.Auth.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -52,27 +55,33 @@ namespace Com.Moonlay.Service.Auth.WebApi
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");// @"server=(localdb)\mssqllocaldb;database=IdentityServer4.Quickstart.EntityFramework;trusted_connection=yes";
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             // Adds IdentityServer
-            services.AddIdentityServer(options =>
+            IIdentityServerBuilder isBuilder = services.AddIdentityServer(options =>
             {
                 options.Events.RaiseSuccessEvents = true;
                 options.Events.RaiseFailureEvents = true;
-                options.Events.RaiseErrorEvents = true;                
-            })
-                .AddTemporarySigningCredential()
-
-                .AddConfigurationStore(builder =>
-                    builder.UseSqlServer(connectionString, options =>
-                        options.MigrationsAssembly(migrationsAssembly)))
-
-                .AddOperationalStore(builder =>
-                    builder.UseSqlServer(connectionString, options =>
-                        options.MigrationsAssembly(migrationsAssembly)))
-
-                .AddAspNetIdentity<ApplicationUser>();
+                options.Events.RaiseErrorEvents = true;
+            });
+            BuildEntityFrameworkIdentityServer(isBuilder);
         }
+        void BuildEntityFrameworkIdentityServer(IIdentityServerBuilder idsrvBuilder)
+        {
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");// @"server=(localdb)\mssqllocaldb;database=IdentityServer4.Quickstart.EntityFramework;trusted_connection=yes";
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
+            idsrvBuilder.AddTemporarySigningCredential()
+
+              .AddConfigurationStore(builder =>
+                  builder.UseSqlServer(connectionString, options =>
+                      options.MigrationsAssembly(migrationsAssembly)))
+
+              .AddOperationalStore(builder =>
+                  builder.UseSqlServer(connectionString, options =>
+                      options.MigrationsAssembly(migrationsAssembly)))
+
+              .AddAspNetIdentity<ApplicationUser>();
+        }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -111,7 +120,35 @@ namespace Com.Moonlay.Service.Auth.WebApi
         }
         private void InitializeDatabase(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            Config.Init(app, env, loggerFactory);
+            bool isTesting = env.IsEnvironment("Test") || env.IsDevelopment();
+
+            var apiResources = Config.GetApiResources().ToList();
+            var clients = Config.GetClients().ToList();
+            var idResources = Config.GetIdentityResources().ToList();
+
+            if (isTesting)
+            {
+                apiResources.Add(new ApiResource("test", "Test Resource"));
+                clients.Add(new Client
+                {
+                    ClientId = "unit.test",
+                    ClientName = "Unit Test",
+                    ClientSecrets =
+                    {
+                        new Secret("test".Sha256())
+                    },
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedScopes = {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "service.project.read",
+                        "service.project.write",
+                        "test"
+                    }
+                });
+            }
+
+
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
@@ -123,16 +160,17 @@ namespace Com.Moonlay.Service.Auth.WebApi
 
                 if (!context.Clients.Any())
                 {
-                    foreach (var client in Config.GetClients())
+                    foreach (var client in clients)
                     {
                         context.Clients.Add(client.ToEntity());
                     }
+
                     context.SaveChanges();
                 }
 
                 if (!context.IdentityResources.Any())
                 {
-                    foreach (var resource in Config.GetIdentityResources())
+                    foreach (var resource in idResources)
                     {
                         context.IdentityResources.Add(resource.ToEntity());
                     }
@@ -141,7 +179,7 @@ namespace Com.Moonlay.Service.Auth.WebApi
 
                 if (!context.ApiResources.Any())
                 {
-                    foreach (var resource in Config.GetApiResources())
+                    foreach (var resource in apiResources)
                     {
                         context.ApiResources.Add(resource.ToEntity());
                     }

@@ -4,21 +4,22 @@ services:
   com.moonlay.service.auth.webapi:
     image: com.moonlay.service.auth.webapi
     environment:
-      - DefaultConnection=Server=mssql;Database=com.moonlay.db.auth;User=sa;password=Standar123;MultipleActiveResultSets=true
+      - DefaultConnection=Server=mssql,1433;Database=com.moonlay.db.auth;User=sa;password=Standar123;MultipleActiveResultSets=true
     build:
       context: ./Com.Moonlay.Service.Auth.WebApi
       dockerfile: Dockerfile
     ports:
       - "5000:80"
     depends_on:
-      - mssql
+      - mssql 
     links:
       - mssql
+
   mssql:
     image: microsoft/mssql-server-linux
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Standar123
       - MSSQL_PID=Developer
-    expose:
-      - "1433"
+    ports:
+      - "1401:1433"
