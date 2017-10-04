@@ -17,7 +17,7 @@ services:
       - mssql
 
   mssql:
-    image: microsoft/mssql-server-windows-express
+    image: microsoft/mssql-server-linux:2017-latest
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Standar123
