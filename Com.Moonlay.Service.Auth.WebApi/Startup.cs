@@ -42,8 +42,9 @@ namespace Com.Moonlay.Service.Auth.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Configuration.GetConnectionString("DefaultConnection") ?? Configuration["DefaultConnection"];
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration["DefaultConnection"]));
+                options.UseSqlServer(connectionString));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -66,8 +67,7 @@ namespace Com.Moonlay.Service.Auth.WebApi
         }
         void BuildEntityFrameworkIdentityServer(IIdentityServerBuilder idsrvBuilder)
         {
-            //var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            var connectionString = Configuration["DefaultConnection"];
+            var connectionString = Configuration.GetConnectionString("DefaultConnection") ?? Configuration["DefaultConnection"];
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             idsrvBuilder.AddTemporarySigningCredential()
