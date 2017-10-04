@@ -26,4 +26,7 @@ after_success:
       docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
       docker tag com-moonlay-service-auth-webapi:test moonlay/com-moonlay-service-auth-webapi:v1.0.0.$TRAVIS_BUILD_NUMBER;
       docker push moonlay/com-moonlay-service-auth-webapi:v1.0.0.$TRAVIS_BUILD_NUMBER;
+
+      docker tag com-moonlay-service-auth-webapi:test moonlay/com-moonlay-service-auth-webapi:v1.0.0.latest;
+      docker push moonlay/com-moonlay-service-auth-webapi:v1.0.0.latest;
       fi
