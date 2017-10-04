@@ -19,10 +19,7 @@ before_script:
 script:
     - dotnet restore Com.Moonlay.Service.Auth.WebApi.Test/Com.Moonlay.Service.Auth.WebApi.Test.csproj
     - dotnet build Com.Moonlay.Service.Auth.WebApi.Test/Com.Moonlay.Service.Auth.WebApi.Test.csproj
-    - dotnet test Com.Moonlay.Service.Auth.WebApi.Test/Com.Moonlay.Service.Auth.WebApi.Test.csproj
-
-deploy:
-    provider: azure_web_apps
+    - dotnet test Com.Moonlay.Service.Auth.WebApi.Test/Com.Moonlay.Service.Auth.WebApi.Test.csproj 
 
 after_success:
     - if [ "$TRAVIS_BRANCH" == "master" ]; then
