@@ -16,6 +16,7 @@ using IdentityServer4.Models;
 using IdentityServer4;
 using System.Net.NetworkInformation;
 using System.Net;
+using Com.Moonlay.Service.Auth.WebApi.Middlewares.CSP;
 
 namespace Com.Moonlay.Service.Auth.WebApi
 {
@@ -103,7 +104,27 @@ namespace Com.Moonlay.Service.Auth.WebApi
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            app.UseCsp(builder =>
+            {
+                builder.Defaults
+                       .AllowSelf();
 
+                builder.Scripts
+                       .AllowSelf()
+                       .Allow("https://ajax.aspnetcdn.com");
+
+                builder.Styles
+                       .AllowSelf()
+                       .Allow("https://ajax.aspnetcdn.com");
+
+                builder.Fonts
+                       .AllowSelf()
+                       .Allow("https://ajax.aspnetcdn.com");
+
+                builder.Images
+                       .AllowSelf()
+                       .Allow("https://media-www-asp.azureedge.net/");
+            });
             app.UseStaticFiles();
 
             app.UseIdentity();
