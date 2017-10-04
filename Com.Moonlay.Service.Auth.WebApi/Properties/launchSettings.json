@@ -12,7 +12,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "DefaultConnection": "Server=tcp:jet-dev.database.windows.net,1433;Initial Catalog=jet.service.auth.dev;Persist Security Info=False;User ID=dev;Password=Standar123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+        "DefaultConnection": "server=(localdb)\\mssqllocaldb;database=IdentityServer4.Quickstart.EntityFramework;trusted_connection=yes",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

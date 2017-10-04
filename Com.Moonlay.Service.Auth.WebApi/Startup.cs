@@ -43,7 +43,7 @@ namespace Com.Moonlay.Service.Auth.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration["DefaultConnection"]));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -66,7 +66,8 @@ namespace Com.Moonlay.Service.Auth.WebApi
         }
         void BuildEntityFrameworkIdentityServer(IIdentityServerBuilder idsrvBuilder)
         {
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");// @"server=(localdb)\mssqllocaldb;database=IdentityServer4.Quickstart.EntityFramework;trusted_connection=yes";
+            //var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            var connectionString = Configuration["DefaultConnection"];
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             idsrvBuilder.AddTemporarySigningCredential()
