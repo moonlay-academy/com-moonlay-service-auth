@@ -17,6 +17,7 @@ using IdentityServer4;
 using System.Net.NetworkInformation;
 using System.Net;
 using Com.Moonlay.Service.Auth.WebApi.Middlewares.CSP;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Com.Moonlay.Service.Auth.WebApi
 {
@@ -62,7 +63,8 @@ namespace Com.Moonlay.Service.Auth.WebApi
             {
                 options.Events.RaiseSuccessEvents = true;
                 options.Events.RaiseFailureEvents = true;
-                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseErrorEvents = true;                
+                
             });
             BuildEntityFrameworkIdentityServer(isBuilder);
         }
@@ -70,7 +72,7 @@ namespace Com.Moonlay.Service.Auth.WebApi
         {
             var connectionString = Configuration.GetConnectionString("DefaultConnection") ?? Configuration["DefaultConnection"];
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-
+            
             idsrvBuilder.AddTemporarySigningCredential()
 
               .AddConfigurationStore(builder =>
@@ -131,6 +133,18 @@ namespace Com.Moonlay.Service.Auth.WebApi
 
             // Adds IdentityServer
             app.UseIdentityServer();
+
+            var forwardOptions = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+                RequireHeaderSymmetry = false
+            };
+
+            forwardOptions.KnownNetworks.Clear();
+            forwardOptions.KnownProxies.Clear();
+
+            // ref: https://github.com/aspnet/Docs/issues/2384
+            app.UseForwardedHeaders(forwardOptions);
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
             app.UseMvc(routes =>
