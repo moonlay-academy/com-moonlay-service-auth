@@ -131,9 +131,6 @@ namespace Com.Moonlay.Service.Auth.WebApi
 
             app.UseIdentity();
 
-            // Adds IdentityServer
-            app.UseIdentityServer();
-
             var forwardOptions = new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
@@ -145,6 +142,9 @@ namespace Com.Moonlay.Service.Auth.WebApi
 
             // ref: https://github.com/aspnet/Docs/issues/2384
             app.UseForwardedHeaders(forwardOptions);
+
+            // Adds IdentityServer
+            app.UseIdentityServer();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
             app.UseMvc(routes =>
