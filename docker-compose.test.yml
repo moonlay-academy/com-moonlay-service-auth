@@ -1,11 +1,11 @@
 version: '3'
  
 services:
-  moonlay-service-auth-webapi-test:
+  moonlay-service-auth-webapi:
     image: com-moonlay-service-auth-webapi:test
     environment:
       - ASPNETCORE_ENVIRONMENT=Test
-      - DefaultConnection=Server=mssql,1433;Database=com.moonlay.db.auth;User=sa;password=Standar123;MultipleActiveResultSets=true
+      - DefaultConnection=Server=mssql,1433;Database=com.moonlay.db.auth;User=sa;password=Standar123.;MultipleActiveResultSets=true
     build:
       context: .
       dockerfile: Dockerfile
@@ -20,7 +20,7 @@ services:
     image: microsoft/mssql-server-linux:2017-latest
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=Standar123
+      - MSSQL_SA_PASSWORD=Standar123.
       - MSSQL_PID=Developer
     ports:
       - "1401:1433"

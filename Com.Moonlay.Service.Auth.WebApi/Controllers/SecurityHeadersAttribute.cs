@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Com.Moonlay.Service.Auth.WebApi.Controllers
+namespace Com.Moonlay.Service.Auth.WebApi
 {
     public class SecurityHeadersAttribute : ActionFilterAttribute
     {
@@ -14,12 +18,16 @@ namespace Com.Moonlay.Service.Auth.WebApi.Controllers
                 {
                     context.HttpContext.Response.Headers.Add("X-Content-Type-Options", "nosniff");
                 }
+
                 if (!context.HttpContext.Response.Headers.ContainsKey("X-Frame-Options"))
                 {
                     context.HttpContext.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
                 }
 
-                var csp = "default-src 'self'";
+                var csp = "default-src 'self';";
+                // an example if you need client images to be displayed from twitter
+                //var csp = "default-src 'self'; img-src 'self' https://pbs.twimg.com";
+
                 // once for standards compliant browsers
                 if (!context.HttpContext.Response.Headers.ContainsKey("Content-Security-Policy"))
                 {

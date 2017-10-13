@@ -1,45 +1,29 @@
-﻿using IdentityServer4.EntityFramework.DbContexts;
+﻿using Com.Moonlay.Service.Auth.WebApi.Data;
+using Com.Moonlay.Service.Auth.WebApi.Models;
+using Com.Moonlay.Service.Auth.WebApi.Services;
+using IdentityServer4;
+using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Com.Moonlay.Service.Auth.WebApi.Data;
-using Com.Moonlay.Service.Auth.WebApi.Models;
-using Com.Moonlay.Service.Auth.WebApi.Services;
 using System.Linq;
 using System.Reflection;
-using IdentityServer4.Models;
-using IdentityServer4;
-using System.Net.NetworkInformation;
-using System.Net;
-using Com.Moonlay.Service.Auth.WebApi.Middlewares.CSP;
-using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Com.Moonlay.Service.Auth.WebApi
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets<Startup>();
-            }
-
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -52,109 +36,56 @@ namespace Com.Moonlay.Service.Auth.WebApi
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc();
-
             // Add application services.
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddTransient<IEmailSender, EmailSender>();
 
-            // Adds IdentityServer
-            IIdentityServerBuilder isBuilder = services.AddIdentityServer(options =>
-            {
-                options.Events.RaiseSuccessEvents = true;
-                options.Events.RaiseFailureEvents = true;
-                options.Events.RaiseErrorEvents = true;                
-                
-            });
-            BuildEntityFrameworkIdentityServer(isBuilder);
-        }
-        void BuildEntityFrameworkIdentityServer(IIdentityServerBuilder idsrvBuilder)
-        {
-            var connectionString = Configuration.GetConnectionString("DefaultConnection") ?? Configuration["DefaultConnection"];
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            
-            idsrvBuilder.AddTemporarySigningCredential()
+            services.AddIdentityServer()
+                .AddDeveloperSigningCredential()
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlServer(connectionString,
+                            sql => sql.MigrationsAssembly(migrationsAssembly));
+                })
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlServer(connectionString,
+                            sql => sql.MigrationsAssembly(migrationsAssembly));
 
-              .AddConfigurationStore(builder =>
-                  builder.UseSqlServer(connectionString, options =>
-                      options.MigrationsAssembly(migrationsAssembly)))
+                    // this enables automatic token cleanup. this is optional.
+                    options.EnableTokenCleanup = true;
+                    options.TokenCleanupInterval = 30;
+                })
+                .AddAspNetIdentity<ApplicationUser>();
 
-              .AddOperationalStore(builder =>
-                  builder.UseSqlServer(connectionString, options =>
-                      options.MigrationsAssembly(migrationsAssembly)))
-
-              .AddAspNetIdentity<ApplicationUser>();
+            services.AddMvc();
         }
-
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             // this will do the initial DB population
-            InitializeDatabase(app, env, loggerFactory);
-
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
+            InitializeDatabase(app, env);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
                 app.UseBrowserLink();
+                app.UseDatabaseErrorPage();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            app.UseCsp(builder =>
-            {
-                builder.Defaults
-                       .AllowSelf();
 
-                builder.Scripts
-                       .AllowSelf()
-                       .Allow("https://ajax.aspnetcdn.com");
-
-                builder.Styles
-                       .AllowSelf()
-                       .Allow("https://ajax.aspnetcdn.com");
-
-                builder.Fonts
-                       .AllowSelf()
-                       .Allow("https://ajax.aspnetcdn.com");
-
-                builder.Images
-                       .AllowSelf()
-                       .Allow("https://media-www-asp.azureedge.net/");
-            });
             app.UseStaticFiles();
 
-            app.UseIdentity();
-
-            var forwardOptions = new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-                RequireHeaderSymmetry = false
-            };
-
-            forwardOptions.KnownNetworks.Clear();
-            forwardOptions.KnownProxies.Clear();
-
-            // ref: https://github.com/aspnet/Docs/issues/2384
-            app.UseForwardedHeaders(forwardOptions);
-
-            // Adds IdentityServer
             app.UseIdentityServer();
 
-            // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvcWithDefaultRoute();
         }
-        private void InitializeDatabase(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        private void InitializeDatabase(IApplicationBuilder app, IHostingEnvironment env)
         {
             bool isTesting = env.IsEnvironment("Test") || env.IsDevelopment();
 

@@ -3,16 +3,16 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5000/",
-      "sslPort": 0
+      "applicationUrl": "http://localhost:34188/",
+      "sslPort": 44360
     }
   },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+      "launchUrl": "https://localhost:44360/",
       "environmentVariables": {
-        "DefaultConnection": "server=(localdb)\\mssqllocaldb;database=IdentityServer4.Quickstart.EntityFramework;trusted_connection=yes",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
@@ -22,7 +22,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:6191/"
+      "applicationUrl": "http://localhost:34189/"
     }
   }
 }

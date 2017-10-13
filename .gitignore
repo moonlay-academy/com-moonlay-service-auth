@@ -4,7 +4,7 @@
 /.vs
 /Com.Moonlay.Service.Auth.WebApi/bin
 /Com.Moonlay.Service.Auth.WebApi/obj
-/bin
-/obj
 /Com.Moonlay.Service.Auth.WebApi.Test/bin
 /Com.Moonlay.Service.Auth.WebApi.Test/obj
+/[Bb]in
+/[Oo]bj
