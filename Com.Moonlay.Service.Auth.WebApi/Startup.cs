@@ -37,11 +37,10 @@ namespace Com.Moonlay.Service.Auth.WebApi
                 .AddDefaultTokenProviders();
 
             // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
-
+            services.AddTransient<IEmailSender, EmailSender>(); 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddIdentityServer()
-                .AddDeveloperSigningCredential()
+                //.AddDeveloperSigningCredential()                
                 .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
@@ -67,7 +66,7 @@ namespace Com.Moonlay.Service.Auth.WebApi
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             // this will do the initial DB population
-            //InitializeDatabase(app, env);
+            InitializeDatabase(app, env);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
