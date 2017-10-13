@@ -2,7 +2,7 @@ sudo: required
 dist: trusty
 language: csharp
 mono: none
-dotnet: 1.0.1
+dotnet: 2.0.0
 solution: Com.Moonlay.Service.Auth.sln
 services:
     - docker
