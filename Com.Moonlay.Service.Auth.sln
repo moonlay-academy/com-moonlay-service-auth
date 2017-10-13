@@ -7,12 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Com.Moonlay.Service.Auth.We
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1AF0C70B-799C-4019-96D0-B2B65811541C}"
 	ProjectSection(SolutionItems) = preProject
-		.dockerignore = .dockerignore
 		.gitignore = .gitignore
 		.travis.yml = .travis.yml
 		docker-compose.test.yml = docker-compose.test.yml
 		Dockerfile.test = Dockerfile.test
 		Dockerfile.test.build = Dockerfile.test.build
+		DROP IDENTITY TABLES.sql = DROP IDENTITY TABLES.sql
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
