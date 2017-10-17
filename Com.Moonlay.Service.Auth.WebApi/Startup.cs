@@ -40,7 +40,7 @@ namespace Com.Moonlay.Service.Auth.WebApi
             services.AddTransient<IEmailSender, EmailSender>(); 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddIdentityServer()
-                //.AddDeveloperSigningCredential()                
+                .AddDeveloperSigningCredential()
                 .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
