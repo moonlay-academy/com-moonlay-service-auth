@@ -5,6 +5,9 @@ using IdentityServer4;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
+using IdentityServer4.AccessTokenValidation;
+using IdentityServer4.Services;
+using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -29,6 +32,8 @@ namespace Com.Moonlay.Service.Auth.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
+
             var connectionString = Configuration.GetConnectionString("DefaultConnection") ?? Configuration["DefaultConnection"];
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
@@ -37,8 +42,6 @@ namespace Com.Moonlay.Service.Auth.WebApi
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
@@ -58,9 +61,18 @@ namespace Com.Moonlay.Service.Auth.WebApi
                     options.EnableTokenCleanup = true;
                     options.TokenCleanupInterval = 30;
                 })
-                .AddAspNetIdentity<ApplicationUser>();
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddSigningCredential(IdentityServerBuilderExtensionsCrypto.CreateRsaSecurityKey());
 
-            services.AddMvc();
+            services.AddAuthentication()
+                .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
+                {
+                    options.Authority = "http://localhost:5000";
+                    options.ApiName = "api";
+                    options.ApiSecret = "secret";
+                });
+            // Add application services.
+            services.AddTransient<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,22 +91,19 @@ namespace Com.Moonlay.Service.Auth.WebApi
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseStaticFiles();
 
             var forwardOptions = new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
                 RequireHeaderSymmetry = false
             };
-
             forwardOptions.KnownNetworks.Clear();
             forwardOptions.KnownProxies.Clear();
-
             // ref: https://github.com/aspnet/Docs/issues/2384
             app.UseForwardedHeaders(forwardOptions);
 
+            app.UseStaticFiles();
             app.UseIdentityServer();
-
             app.UseMvcWithDefaultRoute();
         }
         private void InitializeDatabase(IApplicationBuilder app, IHostingEnvironment env)
