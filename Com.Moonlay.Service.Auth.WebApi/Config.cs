@@ -85,7 +85,7 @@ namespace Com.Moonlay.Service.Auth.WebApi
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
                     AllowedScopes = {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
@@ -94,8 +94,7 @@ namespace Com.Moonlay.Service.Auth.WebApi
                     },
                     RedirectUris ={
                         "https://getpostman.com/oauth2/callback"
-                    },
-                    AllowOfflineAccess = true
+                    }
                 }
             };
 

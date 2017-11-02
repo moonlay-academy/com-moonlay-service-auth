@@ -3,17 +3,16 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5050/",
-      "sslPort": 44361
+      "applicationUrl": "http://localhost:34188/",
+      "sslPort": 44360
     }
   },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:44361/",
+      "launchUrl": "https://localhost:44360/",
       "environmentVariables": {
-        "DefaultConnection": "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=com.moonlay.db.auth2;Integrated Security=True",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
@@ -23,7 +22,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5050/"
+      "applicationUrl": "http://localhost:34189/"
     }
   }
 }
